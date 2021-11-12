@@ -2,7 +2,7 @@
 
 # Defined path
 MainPath="$(pwd)"
-Proton="$(pwd)/../Proton"
+proton="$(pwd)/../proton"
 Any="$(pwd)/../AnyKernel3"
 
 # Make flashable zip
@@ -49,13 +49,17 @@ make  -j$(nproc --all)  O=out ARCH=arm64 SUBARCH=arm64 $Defconfig
 exec 2> >(tee -a out/error.log >&2)
 
 make  -j$(nproc --all)  O=out \
-                        PATH="$Proton/bin:$gcc64/bin:$gcc/bin:/usr/bin:$PATH" \
-                        LD_LIBRARY_PATH="$Proton/lib:$LD_LIBRABRY_PATH" \
+                        PATH="$proton/bin:/usr/bin:$PATH" \
+                        LD_LIBRARY_PATH="$proton/lib:$LD_LIBRABRY_PATH" \
                         CC=clang \
+                        AS=llvm-as \
+                        NM=llvm-nm \
+                        OBJCOPY=llvm-objcopy \
+                        OBJDUMP=llvm-objdump \
+                        STRIP=llvm-strip \
                         LD=ld.lld \
-                        CROSS_COMPILE=aarch64-linux-android- \
-                        CROSS_COMPILE_ARM32=arm-linux-androideabi- \
-                        CLANG_TRIPLE=aarch64-linux-gnu-
+                        CROSS_COMPILE=aarch64-linux-gnu- \
+                        CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
 if [ -e $MainPath/out/arch/arm64/boot/Image.gz-dtb ]; then
     BUILD_END=$(date +"%s")
