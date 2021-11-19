@@ -50,15 +50,17 @@ rm -rf out
 BUILD_START=$(date +"%s")
 
 make  -j$(nproc --all)  O=out ARCH=arm64 SUBARCH=arm64 $Defconfig
-exec 2> >(tee -a out/error.log >&2)
-
 make  -j$(nproc --all)  O=out \
                         PATH=$GCC64/bin:$GCC/bin:/usr/bin:${PATH} \
-                        AR=aarch64-elf-ar \
-                        LD=ld.lld \
-                        OBJDUMP=aarch64-elf-objdump \
                         CROSS_COMPILE=aarch64-elf- \
-                        CROSS_COMPILE_ARM32=arm-eabi-
+                        CROSS_COMPILE_ARM32=arm-eabi- \
+                        AR=aarch64-elf-ar \
+                        NM=llvm-nm \
+                        LD=ld.lld \
+                        OBCOPY=llvm-objcopy \
+                        OBJDUMP=aarch64-elf-objdump \
+                        STRIP=aarch64-elf-strip \
+                        2>&1 | tee out/error.log
 
 if [ -e $MainPath/out/arch/arm64/boot/Image.gz-dtb ]; then
     BUILD_END=$(date +"%s")
