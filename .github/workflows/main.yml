@@ -63,7 +63,15 @@ jobs:
           run: |
             cd begonia
             ZIP=$(echo *.zip)
-            curl -F chat_id="$CHAT_ID" \
-            -F document=@"$ZIP" \
-            -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument \
-            -F caption="Test it @TeraaBytee"
+            if [ -e $ZIP ]; then
+                curl -F chat_id="$CHAT_ID" \
+                -F document=@"$ZIP" \
+                -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument \
+                -F caption="Test it @TeraaBytee"
+            else
+                curl -F chat_id="$CHAT_ID" \
+                -F document=@"out/error.log" \
+                -F parse_mode=markdown https://api.telegram.org/bot$BOT_TOKEN/sendDocument \
+                -F caption="Check it @TeraaBytee"
+            fi
+
