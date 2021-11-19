@@ -18,9 +18,10 @@ on: # [push]
 env:
   BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
   CHAT_ID: ${{ secrets.CHAT_ID }}
-  KERNEL_URL: ${{ secrets.KERNEL_URL }}
+  USER_GIT: ${{ secrets.USER_GIT }}
+  KEY_GIT: ${{ secrets.KEY_GIT }}
+  REPO: ${{ secrets.REPO }}
   KERNEL_BRANCH: ${{ secrets.KERNEL_BRANCH }}
-  KERNEL_PATH: ${{ secrets.KERNEL_PATH }}
   SCRIPT: ${{ secrets.SCRIPT }}
   TZ: Asia/Jakarta
 
@@ -48,7 +49,7 @@ jobs:
             -d "disable_web_page_preview=true" \
             -d "parse_mode=html" \
             -d text="Clone source kernel"
-            git clone --depth=1 $KERNEL_URL -b $KERNEL_BRANCH $KERNEL_PATH
+            git clone --depth=1 https://$USER_GIT:$KEY_GIT@github.com/$USER_GIT/$REPO -b $KERNEL_BRANCH begonia
         - name: Run scripts
           run: |
             curl -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
@@ -56,11 +57,11 @@ jobs:
             -d "disable_web_page_preview=true" \
             -d "parse_mode=html" \
             -d text="Run scripts"
-            cd $KERNEL_PATH
+            cd begonia
             sudo bash ../$SCRIPT
         - name: Upload
           run: |
-            cd $KERNEL_PATH
+            cd begonia
             ZIP=$(echo *.zip)
             curl -F chat_id="$CHAT_ID" \
             -F document=@"$ZIP" \
