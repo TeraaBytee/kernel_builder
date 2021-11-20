@@ -41,7 +41,7 @@ jobs:
             -d "parse_mode=html" \
             -d text="Initializing environment for compiling kernel"
             sudo apt-get update
-            sudo apt-get install bc bison ca-certificates curl flex gcc git libc6-dev libssl-dev openssl python zip zstd make clang gcc-arm-linux-gnueabi software-properties-common -y
+            sudo apt-get install lld bc bison ca-certificates curl flex gcc git libc6-dev libssl-dev openssl python zip zstd make clang gcc-arm-linux-gnueabi software-properties-common -y
         - name: Clone source kernel
           run: |
             curl -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
