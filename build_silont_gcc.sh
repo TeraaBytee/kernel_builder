@@ -26,10 +26,10 @@ MakeZip() {
 
 # Clone compiler
 if [ ! -d $GCC64 ]; then
-    git clone --depth=1 https://github.com/silont-project/aarch64-elf-gcc -b arm64/11 $GCC64
+    git clone --depth=1 https://github.com/silont-project/aarch64-elf-gcc -b arm64/10 $GCC64
 fi
 if [ ! -d $GCC ]; then
-    git clone --depth=1 https://github.com/silont-project/arm-eabi-gcc -b arm/11 $GCC
+    git clone --depth=1 https://github.com/silont-project/arm-eabi-gcc -b arm/10 $GCC
 fi
 
 # Defined config
