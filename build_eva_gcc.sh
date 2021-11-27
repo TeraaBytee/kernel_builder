@@ -9,18 +9,18 @@ Any="$(pwd)/../AnyKernel3"
 # Make flashable zip
 MakeZip() {
     if [ ! -d $Any ]; then
-        git clone https://github.com/TeraaBytee/AnyKernel3 -b master $Any
+        git clone https://github.com/TeraaBytee/AnyKernel3 -b q-oss $Any
         cd $Any
     else
         cd $Any
         git reset --hard
-        git checkout master
-        git fetch origin master
-        git reset --hard origin/master
+        git checkout q-oss
+        git fetch origin q-oss
+        git reset --hard origin/q-oss
     fi
     cp -af $MainPath/out/arch/arm64/boot/Image.gz-dtb $Any
     sed -i "s/kernel.string=.*/kernel.string=$KERNEL_NAME-$HeadCommit test by $KBUILD_BUILD_USER/g" anykernel.sh
-    zip -r9 $MainPath/"[$Compiler][R-OSS]-$ZIP_KERNEL_VERSION-$KERNEL_NAME-$TIME.zip" * -x .git README.md *placeholder
+    zip -r9 $MainPath/"[$Compiler][Q-OSS]-$ZIP_KERNEL_VERSION-$KERNEL_NAME-$TIME.zip" * -x .git README.md *placeholder
     cd $MainPath
 }
 
@@ -50,6 +50,8 @@ rm -rf out
 BUILD_START=$(date +"%s")
 
 make  -j$(nproc --all)  O=out ARCH=arm64 SUBARCH=arm64 $Defconfig
+exec 2> >(tee -a out/error.log >&2)
+
 make  -j$(nproc --all)  O=out \
                         PATH=$GCC64/bin:$GCC/bin:/usr/bin:${PATH} \
                         CROSS_COMPILE=aarch64-elf- \
@@ -59,8 +61,7 @@ make  -j$(nproc --all)  O=out \
                         LD=ld.lld \
                         OBCOPY=llvm-objcopy \
                         OBJDUMP=aarch64-elf-objdump \
-                        STRIP=aarch64-elf-strip \
-                        2>&1 | tee out/error.log
+                        STRIP=aarch64-elf-strip
 
 if [ -e $MainPath/out/arch/arm64/boot/Image.gz-dtb ]; then
     BUILD_END=$(date +"%s")
